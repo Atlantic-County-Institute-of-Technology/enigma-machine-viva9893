@@ -1,13 +1,16 @@
 # Enigma Machine
 # author: Cesar Vivas
+
 import os
+ #-------------------GLOBAL CONSTANTS----------------------------
 
 # ENGLISH ALPHABET
 UPPER_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 LOWER_ALPHABET = "abcdefghijklmnopqrstuvwxyz"
+FILE_EXTENSION =".txt"
 
 
-# CIPHER
+# CIPHER(VIGENERE)
 def vigenere_encrypt(phrase, key):
     encrypted = ""
     key_index = 0
@@ -32,7 +35,7 @@ def vigenere_encrypt(phrase, key):
             encrypted += char
 
     return encrypted
-# Decryption
+# Decryption(VIGENERE)
 def vigenere_decrypt(ciphertext, key):
     decrypted = ""
     key_index = 0
@@ -59,109 +62,126 @@ def vigenere_decrypt(ciphertext, key):
 
     return decrypted
 
+# ------------------ WRITING OVER/ OPENING FILES ------------------
+def create_encrypted_file():
+    filename = input("Enter file name (without extension): ").strip() + FILE_EXTENSION
+    message = input("Enter your message: ")
+    key = input("Enter encryption key: ").strip()
 
 
+    if not key.isalpha():
+        print("Key must contain letters only.")
+        return
+
+    # output
+    encrypted_message = vigenere_encrypt(message, key)
+
+    # option not to to avoid  overwrite if file already exist
+    if os.path.exists(filename):
+        overwrite = input("File exists. Overwrite? (y/N): ").lower()
+        if overwrite != "y" or "yes":
+            return
+
+
+    with open(filename, "w") as file:
+        file.write(encrypted_message)
+
+
+    print(f"Encrypted message saved to '{filename}'")
+
+
+
+
+def decrypt_file():
+    filename = input("Enter filename to decrypt (without extension): ").strip() + FILE_EXTENSION
+
+
+    if not os.path.exists(filename):
+        print("File not found.")
+        return
+    if os.path.exists(filename):
+        overwrite = input("File exists. Overwrite? (y/N): ").lower()
+        while overwrite == "y" or "yes":
+            with open(filename, "w") as file:
+                message = input("Enter your message: ")
+                key = input("Enter encryption key: ").strip()
+
+                if not key.isalpha():
+                    print("Key must contain letters only.")
+                    return
+                # output
+                encrypted_message = vigenere_encrypt(message, key)
+                with open(filename, "w") as file:
+                    file.write(encrypted_message)
+
+                print(f"Encrypted message saved to '{filename}'")
+
+
+    key = input("Enter decryption key: ").strip()
+
+
+    if not key.isalpha():
+        print("Key must contain letters only.")
+        return
+
+
+    with open(filename, "r") as file:
+        ciphertext = file.read()
+
+
+    decrypted_message = vigenere_decrypt(ciphertext, key)
+
+
+    print("\n--- DECRYPTED MESSAGE ---")
+    print(decrypted_message)
+
+
+
+
+
+# ---------- MAIN MENU ----------
 def main():
-    print("You have entered CipherWRL")
-    print("Create files with encrypted messages and open them using a key to unencrypt")
-    print("If at any time you wish to exit, press '0'")
+    print("Welcome to CipherWRL (Vigenère Edition)")
+
 
     while True:
-        print("[-] 0. Exit")
-        print("[-] 1. Encrypt a message and save to file")
+        print("\n[0] Exit")
+        print("[1] Create encrypted file")
+        print("[2] Open and decrypt file")
+
 
         try:
-            selection = int(input("Please select an option (0-1): "))
+            choice = int(input("Select option (0-2): "))
         except ValueError:
-            print("Invalid input. Please enter a number.")
+            print("Please enter a number.")
             continue
 
-        if selection == 0:
-            print("Program is exiting.")
+
+        if choice == 0:
+            print("Goodbye.")
             break
+        elif choice == 1:
+            create_encrypted_file()
+        elif choice == 2:
+            decrypt_file()
 
-        elif selection == 1:
-            # get file name
-            file_name = input("Enter file name (without extension): ").strip()
-            file_name = file_name + ".txt"
-
-            # check if file already exists
-            if os.path.exists(file_name):
-                print("Error: File already exists.")
-                continue
-
-            # get message and key
-            message = input("Enter your message: ")
-            key = input("Enter encryption key: ")
-
-            # encrypt message
-            encrypted_message = vigenere_encrypt(message, key)
-
-            # write to file
-            try:
-                with open(file_name, "w") as file:
-                    file.write(encrypted_message)
-                print(f"Message encrypted and saved to '{file_name}'")
-            except IOError:
-                print("Error: Could not write to file.")
-            while True:
-                print("[-] 0. Exit\n"
-                      "[-] 1. Encrypt New Message\n"
-                      "[-] 2. Open File\n"
-                      )
-
-                try:
-                    selection_0 = int(input("Please select an option(0-2) : "))
-                except ValueError:
-                    print("(Invalid input")
-                    continue
-
-                if selection_0 == 0:
-                    print("Program is existing")
-                    exit()
-        #
-                elif selection_0 == 1:  # takes you back to line line 85 to create file
+        else:
+            print("Invalid selection.")
 
 
-        #
-        #         elif selection_0 == 2:  # option 2 - apply a sorting algorithm.
-        #             while True:
-        #
-        #                 print("[-] 1. bubble_sort\n"
-        #                       "[-] 2. selection_sort\n"
-        #                       "[-] 3. insertion_sort \n"
-        #                       )
-        #
-        #                 try:
-        #                     selection_2 = int(input("Please indicate an algorthim to sort the list (1-3) : "))
-        #                 except ValueError:
-        #                     print("(Invalid input")
-        #                     continue
-        #                 if selection_2 == 1:
-        #                     sorted_list = bubble_sort(list[:])
-        #                     bubble_count += 1
-        #
-        #                 elif selection_2 == 2:
-        #                     sorted_list = selection_sort(list[:])
-        #                     selection_count += 1
-        #
-        #                 elif selection_2 == 3:
-        #                     sorted_list = insertion_sort(list[:])
-        #                     insertion_count += 1
-        #
-        #                 else:
-        #                     print("invalid choice")
-        #                     continue
-        #                 print(f"old list = {list} ")
-        #                 print(f"sorted list = {sorted_list}")
-        #                 break
-        #                 # access saved data, such as the  number of sorts and the total number of sorting actions
-        #         elif selection_0 == 3:
-        #
-        #
-        # else:
-        #     print("Invalid option. Please choose 0 or 1.")
+
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
+
+
+
+
+
+
 
