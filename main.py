@@ -76,7 +76,7 @@ def create_encrypted_file():
     # output
     encrypted_message = vigenere_encrypt(message, key)
 
-    # option not to to avoid  overwrite if file already exist
+    # option not to avoid  overwrite if file already exist
     if os.path.exists(filename):
         overwrite = input("File exists. Overwrite? (y/N): ").lower()
         if overwrite != "y" or "yes":
@@ -100,7 +100,7 @@ def decrypt_file():
         print("File not found.")
         return
     if os.path.exists(filename):
-        overwrite = input("File exists. Overwrite? (y/N): ").lower()
+        overwrite = input(" Would u like to overwrite this file? (y/N): ").lower()
         while overwrite == "y" or "yes":
             with open(filename, "w") as file:
                 message = input("Enter your message: ")
@@ -113,8 +113,8 @@ def decrypt_file():
                 encrypted_message = vigenere_encrypt(message, key)
                 with open(filename, "w") as file:
                     file.write(encrypted_message)
-
-                print(f"Encrypted message saved to '{filename}'")
+            print(f"Encrypted message saved to '{filename}'")
+            break
 
 
     key = input("Enter decryption key: ").strip()
@@ -147,11 +147,10 @@ def main():
     while True:
         print("\n[0] Exit")
         print("[1] Create encrypted file")
-        print("[2] Open and decrypt file")
 
 
         try:
-            choice = int(input("Select option (0-2): "))
+            choice = int(input("Select option (0-1): "))
         except ValueError:
             print("Please enter a number.")
             continue
@@ -162,8 +161,22 @@ def main():
             break
         elif choice == 1:
             create_encrypted_file()
-        elif choice == 2:
-            decrypt_file()
+            while True:
+                print("\n[0] Exit")
+                print("[1] Create encrypted file")
+                print("[2] Open and decrypt file")
+                try:
+                    choice1 = int(input("Select option (0-2): "))
+                except ValueError:
+                    print("Please enter a number.")
+                    continue
+                if choice1 == 0:
+                    print("Goodbye.")
+                    break
+                elif choice1 == 1:
+                    create_encrypted_file()
+                elif choice1 == 2:
+                    decrypt_file()
 
         else:
             print("Invalid selection.")
