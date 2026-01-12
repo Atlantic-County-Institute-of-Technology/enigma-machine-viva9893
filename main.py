@@ -68,7 +68,10 @@ def create_encrypted_file():
     message = input("Enter your message: ")
     key = input("Enter encryption key: ").strip()
 
-
+    # error validations
+    if not filename.isalpha():
+        print("Invalid file name! must contain letters only")
+        return
     if not key.isalpha():
         print("Key must contain letters only.")
         return
