@@ -92,45 +92,43 @@ def create_encrypted_file():
 
 
 
+
+
 def decrypt_file():
     filename = input("Enter filename to decrypt (without extension): ").strip() + FILE_EXTENSION
-
 
     if not os.path.exists(filename):
         print("File not found.")
         return
-    if os.path.exists(filename):
-        overwrite = input(" Would u like to overwrite this file? (y/N): ").lower()
-        while overwrite == "y" or "yes":
-            with open(filename, "w") as file:
-                message = input("Enter your message: ")
-                key = input("Enter encryption key: ").strip()
 
-                if not key.isalpha():
-                    print("Key must contain letters only.")
-                    return
-                # output
-                encrypted_message = vigenere_encrypt(message, key)
-                with open(filename, "w") as file:
-                    file.write(encrypted_message)
-            print(f"Encrypted message saved to '{filename}'")
-            break
+    overwrite = input("Would you like to overwrite this file? (y/N): ").lower()
 
+    if overwrite in ("y", "yes"):
+        message = input("Enter your message: ")
+        key = input("Enter encryption key: ").strip()
 
+        if not key.isalpha():
+            print("Key must contain letters only.")
+            return
+
+        encrypted_message = vigenere_encrypt(message, key)
+
+        with open(filename, "w") as file:
+            file.write(encrypted_message)
+
+        print(f"Encrypted message saved to '{filename}'")
+
+    # continue to decryption regardless
     key = input("Enter decryption key: ").strip()
-
 
     if not key.isalpha():
         print("Key must contain letters only.")
         return
 
-
     with open(filename, "r") as file:
         ciphertext = file.read()
 
-
     decrypted_message = vigenere_decrypt(ciphertext, key)
-
 
     print("\n--- DECRYPTED MESSAGE ---")
     print(decrypted_message)
@@ -138,10 +136,9 @@ def decrypt_file():
 
 
 
-
 # ---------- MAIN MENU ----------
 def main():
-    print("Welcome to CipherWRL (Vigenère Edition)")
+    print("Welcome to CipherWRL (Vigenère)")
 
 
     while True:
